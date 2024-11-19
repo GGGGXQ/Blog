@@ -27,6 +27,6 @@ export const useToastStore = defineStore({
             setTimeout(() => {
                 this.isVisible = false
             }, this.ms)
-        }
+        },
     }
 })
