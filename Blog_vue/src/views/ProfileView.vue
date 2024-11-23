@@ -7,9 +7,28 @@
                 <p><strong>{{ user.name }}</strong></p>
 
                 <div class="mt-6 flex space-x-8 justify-around">
-                    <p class="text-xs text-gray-500">182 朋友</p>
+                    <RouterLink :to="{name:'friends', params: {id: user.id}}" class="text-xs text-gray-500">{{user.friends_count}} 朋友</RouterLink>
                     <p class="text-xs text-gray-500">120 发布</p>
                 </div>
+
+                <div class="mt-6">
+                    <button
+                        class="inline-block py-4 px-6 bg-purple-600 text-xs text-white rounded-lg"
+                        @click="sendFriendshipRequest"
+                        v-if="userStore.user.id !== user.id"
+                    >
+                        申请成为朋友
+                    </button>
+                    <button
+                        class="inline-block py-4 px-6 bg-red-600 text-xs text-white rounded-lg"
+                        @click="logout"
+                        v-if="userStore.user.id === user.id"
+                    >
+                        退出
+                    </button>
+
+                </div>
+
             </div>
         </div>
 
@@ -54,14 +73,18 @@ import PeopleYouMayKnow from '../components/PeopleYouMayKnow.vue'
 import Trends from '../components/Trends.vue'
 import FeedItem from '../components/FeedItem.vue'
 import { userUserStore } from '@/stores/user'
+import { useToastStore } from '@/stores/toast'
+
 export default {
     name: 'FeedView',
 
     setup() {
         const userStore = userUserStore()
+        const toastStore = useToastStore()
 
         return {
-            userStore
+            userStore,
+            toastStore
         }
     },
 
@@ -74,7 +97,9 @@ export default {
     data() {
         return {
             posts:[],
-            user: {},
+            user: {
+                id: null,
+            },
             body:'',
         }
     }, 
@@ -94,6 +119,24 @@ export default {
     },
 
     methods: {
+        sendFriendshipRequest() {
+            axios
+                .post(`/api/friends/${this.$route.params.id}/request/`)
+                .then(response => {
+                    console.log('data', response.data)
+                    if (response.data.message == 'You have already sent a friendship request to this user.') {
+                        this.toastStore.showToast(5000, '不可重复发送！', 'bg-red-300')
+                    } else if (response.data.message == 'The user has already sent you a friendship request.'){
+                        this.toastStore.showToast(5000, '对方已向您发送好友申请！', 'bg-red-300')
+                    } else {
+                        this.toastStore.showToast(5000, '请求已发送！', 'bg-emerald-300')
+                    }
+                })
+                .catch(error => {
+                    console.log('error:', error)
+                })
+        },
+
         getFeed() {
             axios
                 .get(`/api/posts/profile/${this.$route.params.id}/`)
@@ -123,6 +166,11 @@ export default {
                 .catch(error => {
                     console.log('error', error)
                 })
+        },
+        logout() {
+            console.log('Log out')
+            this.userStore.removeToken()
+            this.$router.push('/login')
         }
     }
 }

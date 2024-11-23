@@ -6,6 +6,7 @@ import FeedView from '../views/FeedView.vue'
 import MessagesView from '../views/MessagesView.vue'
 import SearchView from '../views/SearchView.vue'
 import ProfileView from '../views/ProfileView.vue'
+import FriendsView from '../views/FriendsView.vue'
 
 
 const router = createRouter({
@@ -15,6 +16,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+    },
+    {
+      path: '/profile/:id/friends',
+      name: 'friends',
+      component: FriendsView
     },
     {
       path: '/profile/:id',
