@@ -7,6 +7,7 @@ import MessagesView from '../views/MessagesView.vue'
 import SearchView from '../views/SearchView.vue'
 import ProfileView from '../views/ProfileView.vue'
 import FriendsView from '../views/FriendsView.vue'
+import PostView from '../views/PostView.vue'
 
 
 const router = createRouter({
@@ -16,6 +17,11 @@ const router = createRouter({
       path: '/',
       name: 'home',
       component: HomeView,
+    },
+    {
+      path: '/:id',
+      name: 'postview',
+      component: PostView,
     },
     {
       path: '/profile/:id/friends',

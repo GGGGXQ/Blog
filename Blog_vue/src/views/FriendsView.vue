@@ -2,7 +2,7 @@
     <div class="max-w-7xl mx-auto grid grid-cols-4 gap-4">
         <div class="main-left col-span-1">
             <div class="p-4 bg-white boder border-gray-200 text-center rounded-lg">
-                <img src="../assets/virtual_img.jpg" class="mb-6 rounded-full">
+                <RouterLink :to="{name:'profile', params:{ 'id': userStore.user.id }}"><img src="../assets/virtual_img.jpg" class="mb-6 rounded-full"></RouterLink>
                 
                 <p><strong>{{ user.name }}</strong></p>
 
@@ -52,7 +52,7 @@
                     v-for="user in friends"
                     v-bind:key="user.id"
                 >
-                    <img src="../assets/virtual_img.jpg" class="mb-6 rounded-full">
+                    <RouterLink :to="{name:'profile', params:{ 'id': user.id }}"><img src="../assets/virtual_img.jpg" class="mb-6 rounded-full"></RouterLink>
                     <p>
                         <strong>
                             <RouterLink :to="{name:'profile', params:{ 'id': user.id }}">{{ user.name }}</RouterLink>

@@ -33,15 +33,15 @@
                 </div>
                 
                 <div class="menu-right">
-                    <template v-if="userStore.user.isAuthenticated">
+                    <template v-if="userStore.user.isAuthenticated && userStore.user.id">
                         <RouterLink :to="{name:'profile', params:{ 'id': userStore.user.id }}">
                             <img src="./assets/virtual_img.jpg" class="w-12 rounded-full">
                         </RouterLink>
                     </template>
 
                     <template v-else>
-                        <RouterLink to="/login" class="mr-4 py-4 px-6 bg-gray-600 text-white rounded-lg">Log in</RouterLink>
-                        <RouterLink to="/signup" class="py-4 px-6 bg-purple-600 text-white rounded-lg">Sign up</RouterLink>
+                        <RouterLink to="/login" class="mr-4 py-4 px-6 bg-gray-600 text-white rounded-lg">登录</RouterLink>
+                        <RouterLink to="/signup" class="py-4 px-6 bg-purple-600 text-white rounded-lg">注册</RouterLink>
                     </template>
                 </div>
             </div>
@@ -56,7 +56,7 @@
 
 <script>
     import axios from 'axios'
-    import  Toast from '@/components/Toast.vue'
+    import Toast from '@/components/Toast.vue'
     import { userUserStore } from '@/stores/user'
 
     export default {
@@ -69,7 +69,7 @@
         },
 
         components: {
-            Toast,
+            Toast
         },
 
         beforeCreate() {
@@ -77,7 +77,7 @@
 
             const token = this.userStore.user.access
 
-            if(token) {
+            if (token) {
                 axios.defaults.headers.common["Authorization"] = "Bearer " + token;
             } else {
                 axios.defaults.headers.common["Authorization"] = "";

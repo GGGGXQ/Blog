@@ -8,10 +8,10 @@
                 </strong>
             </p>
         </div>
-        <p class="text-gray-600">{{ post.created_at_formatted }}</p>
+        <p class="text-gray-600 text-xs">{{ post.created_at_formatted }}</p>
     </div>
 
-    <p>{{ post.body }}</p>
+    <RouterLink :to="{name: 'postview', params: {id: post.id}}"><p>{{ post.body }}</p></RouterLink>
     
     <div class="my-6 flex justify-between">
         <div class="flex space-x-6">
@@ -36,13 +36,13 @@
                 <span class="text-gray-500 text-xs">{{post.likes_count}}</span>
             </div>
             
-            <div class="flex items-center space-x-2">
+            <RouterLink :to="{name: 'postview', params: {id: post.id}}" class="flex items-center space-x-2">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H8.25m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0H12m4.125 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 0 1-2.555-.337A5.972 5.972 0 0 1 5.41 20.97a5.969 5.969 0 0 1-.474-.065 4.48 4.48 0 0 0 .978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25Z" />
                 </svg>
 
-                <span class="text-gray-500 text-xs">0</span>
-            </div>
+                <span class="text-gray-500 text-xs">{{post.comments_count}}</span>
+            </RouterLink>
         </div>
         <div>
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-6">
@@ -66,7 +66,7 @@ export default {
                 .then(response => {
                     const post = response.data.find(post => post.id === this.post.id);
                     if (post) {
-                        this.post.isLiked = post.is_liked;
+                        this.post.isLiked = post.is_liked
                     }
                 })
                 .catch(error => {
