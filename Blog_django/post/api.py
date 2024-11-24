@@ -1,8 +1,7 @@
-import re
 from django.http import JsonResponse
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from .forms import PostForm
-from .models import Post
+from .models import Post, Like
 from .serializers import PostSerializers
 from account.models import User
 from account.serializers import UserSerializers
@@ -10,13 +9,10 @@ from account.serializers import UserSerializers
 
 @api_view(['GET'])
 def post_list(request):
-    user_ids = [request.user.id]
-    for user in  request.user.friends.all():
-        user_ids.append(user.id)
-    
+    user_ids = [request.user.id] +  [friend.id for friend in request.user.friends.all()]
     posts = Post.objects.filter(created_by_id__in=list(user_ids))
 
-    serializer = PostSerializers(posts, many=True)
+    serializer = PostSerializers(posts, many=True, context={'request': request})
 
     return JsonResponse(serializer.data, safe=False)
 
@@ -27,7 +23,8 @@ def post_list_profile(request, id):
     user = User.objects.get(pk=id)
     posts = Post.objects.filter(created_by_id=id)
 
-    post_serializer = PostSerializers(posts, many=True)
+    post_serializer = PostSerializers(posts, many=True, context={'request': request})
+
     user_serializer = UserSerializers(user)
 
     return JsonResponse({
@@ -50,3 +47,28 @@ def post_create(request):
         return JsonResponse(serializer.data, safe=False)
     else:
         return JsonResponse({'error': 'add something here later!'})
+    
+
+@api_view(['POST'])
+def post_like(request, pk):
+    post = Post.objects.get(pk=pk)
+    like = Like.objects.filter(created_by=request.user, post=post).first()
+    if like:
+        like.delete()
+        post = Post.objects.get(pk=pk)
+            
+        post.likes_count = post.likes_count - 1
+        post.likes.remove(like)
+        post.save()
+        return JsonResponse({'message': 'dislike created'})
+        
+    else:
+        
+        like = Like.objects.create(created_by=request.user)
+    
+        post = Post.objects.get(pk=pk)
+
+        post.likes_count = post.likes_count + 1
+        post.likes.add(like)
+        post.save()
+        return JsonResponse({'message': 'like created'})
