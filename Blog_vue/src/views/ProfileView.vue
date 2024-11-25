@@ -11,13 +11,20 @@
                     <p class="text-xs text-gray-500">120 发布</p>
                 </div>
 
-                <div class="mt-6">
+                <div class="mt-6 justify-between">
                     <button
                         class="inline-block py-4 px-6 bg-purple-600 text-xs text-white rounded-lg"
                         @click="sendFriendshipRequest"
                         v-if="userStore.user.id !== user.id"
                     >
-                        申请成为朋友
+                        加为朋友
+                    </button>
+                    <button
+                        class="inline-block py-4 px-6 bg-purple-600 text-xs text-white rounded-lg"
+                        @click="sendDirectMessage"
+                        v-if="userStore.user.id !== user.id"
+                    >
+                        发送消息
                     </button>
                     <button
                         class="inline-block py-4 px-6 bg-red-600 text-xs text-white rounded-lg"
@@ -26,6 +33,7 @@
                     >
                         退出
                     </button>
+                    
 
                 </div>
 
@@ -119,6 +127,17 @@ export default {
     },
 
     methods: {
+        sendDirectMessage() {
+            axios
+                .get(`/api/chat/${this.$route.params.id}/get-or-create/`)
+                .then(response => {
+                    this.$router.push('/chat')
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        },
+
         sendFriendshipRequest() {
             axios
                 .post(`/api/friends/${this.$route.params.id}/request/`)
