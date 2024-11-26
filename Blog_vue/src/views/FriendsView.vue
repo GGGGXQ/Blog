@@ -2,7 +2,7 @@
     <div class="max-w-7xl mx-auto grid grid-cols-4 gap-4">
         <div class="main-left col-span-1">
             <div class="p-4 bg-white boder border-gray-200 text-center rounded-lg">
-                <RouterLink :to="{name:'profile', params:{ 'id': userStore.user.id }}"><img src="../assets/virtual_img.jpg" class="mb-6 rounded-full"></RouterLink>
+                <RouterLink :to="{name:'profile', params:{ 'id': userStore.user.id }}"><img  :src="user.get_avatar" class="rounded-full object-cover w-36 h-36 sm:w-48 sm:h-48 mx-auto mb-6"></RouterLink>
                 
                 <p><strong>{{ user.name }}</strong></p>
 
@@ -23,7 +23,7 @@
                     v-for="friendshipRequest in friendshipRequests"
                     v-bind:key="friendshipRequest.id"
                 >
-                    <img src="../assets/virtual_img.jpg" class="mb-6 mx-auto rounded-full  w-1/4 h-auto">
+                    <img :src="user.get_avatar" class="mb-6 mx-auto rounded-full  w-1/4 h-auto">
                     <p>
                         <strong>
                             <RouterLink :to="{name:'profile', params:{ 'id': friendshipRequest.created_by.id }}">{{ friendshipRequest.created_by.name }}</RouterLink>
@@ -52,7 +52,7 @@
                     v-for="user in friends"
                     v-bind:key="user.id"
                 >
-                    <RouterLink :to="{name:'profile', params:{ 'id': user.id }}"><img src="../assets/virtual_img.jpg" class="mb-6 rounded-full"></RouterLink>
+                    <RouterLink :to="{name:'profile', params:{ 'id': user.id }}"><img :src="user.get_avatar" class="mb-6 rounded-full"></RouterLink>
                     <p>
                         <strong>
                             <RouterLink :to="{name:'profile', params:{ 'id': user.id }}">{{ user.name }}</RouterLink>

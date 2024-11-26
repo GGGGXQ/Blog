@@ -9,6 +9,7 @@ import FriendsView from '../views/FriendsView.vue'
 import PostView from '../views/PostView.vue'
 import ChatView from '../views/ChatView.vue'
 import TrendView from '../views/TrendView.vue'
+import EditProfileView from '../views/EditProfileView.vue'
 
 
 const router = createRouter({
@@ -33,6 +34,11 @@ const router = createRouter({
       path: '/profile/:id/friends',
       name: 'friends',
       component: FriendsView
+    },
+    {
+      path: '/profile/edit',
+      name: 'editprofile',
+      component: EditProfileView
     },
     {
       path: '/profile/:id',

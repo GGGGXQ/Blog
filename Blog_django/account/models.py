@@ -53,6 +53,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     EMAIL_FIELD = 'email'
     REQUIRED_FIELDS = []
 
+    def get_avatar(self):
+        if self.avatar:
+            return settings.WEBSITE_URL + self.avatar.url
+        else:
+            return 'https://picsum.photos/200/200'
+
 
 class FriendshipRequest(models.Model):
     SENT = 'sent'

@@ -44,7 +44,7 @@
                     </template>
 
                     <div>
-                        <button class="py-4 px-6 bg-purple-600 text-whit rounded-lg">注册</button>
+                        <button class="py-4 px-6 bg-purple-600 text-white rounded-lg">注册</button>
                     </div>
                 </form>
             </div>

@@ -1,8 +1,7 @@
-from re import U
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
-from .forms import SignupForm
+from .forms import ProfileForm, SignupForm
 from .models import User, FriendshipRequest
 from .serializers import UserSerializers, FriendshipRequestSerializer
 
@@ -13,6 +12,7 @@ def me(request):
         'id': request.user.id,
         'name': request.user.name,
         'email': request.user.email,
+        'avatar': request.user.get_avatar()
     })
 
 
@@ -58,6 +58,19 @@ def friends(request, pk):
         'friends': UserSerializers(friends, many=True).data,
         'requests': requests
     }, safe=False)
+
+
+@api_view(['POST'])
+def editprofile(request):
+    user = request.user
+    form = ProfileForm(request.data, request.FILES, instance=user)
+
+    if form.is_valid():
+        form.save()
+
+    serializer = UserSerializers(user)
+
+    return JsonResponse({'message': '修改已更新', 'user': serializer.data}, status=200)
 
 
 @api_view(['POST'])

@@ -16,7 +16,7 @@
                                 v-bind:key="user.id"
                             >
                                 <div v-if="user.id !== userStore.user.id" class="flex items-center space-x-2">
-                                    <img src="../assets/virtual_img.jpg" class="w-[40px] rounded-full" />
+                                    <img :src="user.get_avatar" class="w-[40px] rounded-full object-cover w-6 h-6 sm:w-12 sm:h-12 mx-auto">
                                     <p class="text-xs font-bold">{{ user.name }}</p>
                                 </div>
                             </template>
@@ -46,7 +46,7 @@
                                 <span class="text-xs text-gray-500 leading-none">{{message.created_at_formatted}}</span>
                             </div>
                             <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300">
-                                <img src="../assets/virtual_img.jpg" class="w-[40px] rounded-full">
+                                <img :src="message.created_by.get_avatar" class="w-[40px] rounded-full object-cover w-12 h-12 sm:w-10 sm:h-10 mx-auto">
                             </div>
                         </div>
 
@@ -55,7 +55,7 @@
                             v-else
                         >
                             <div class="flex-shrink-0 h-10 w-10 rounded-full bg-gray-300">
-                                <img src="../assets/virtual_img.jpg" class="w-[40px] rounded-full">
+                                <img :src="message.created_by.get_avatar" class="rounded-full object-cover w-12 h-12 sm:w-10 sm:h-10 mx-auto">
                             </div>
                             <div>
                                 <div class="bg-gray-300 p-3 rounded-r-lg rounded-bl-lg">

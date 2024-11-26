@@ -21,7 +21,7 @@
                     v-for="user in users"
                     v-bind:key="user.id"
                 >
-                    <RouterLink :to="{name:'profile', params:{ 'id': user.id }}"><img src="../assets/virtual_img.jpg" class="mb-6 rounded-full"></RouterLink>
+                    <RouterLink :to="{name:'profile', params:{ 'id': user.id }}"><img :src="user.get_avatar" class="rounded-full object-cover w-36 h-36 mx-auto mb-4"></RouterLink>
                     <p>
                         <strong>
                             <RouterLink :to="{name:'profile', params:{ 'id': user.id }}">{{ user.name }}</RouterLink>
