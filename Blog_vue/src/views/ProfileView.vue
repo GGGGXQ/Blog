@@ -8,12 +8,12 @@
 
                 <div class="mt-6 flex space-x-8 justify-around">
                     <RouterLink :to="{name:'friends', params: {id: user.id}}" class="text-xs text-gray-500">{{user.friends_count}} 朋友</RouterLink>
-                    <p class="text-xs text-gray-500">120 发布</p>
+                    <p class="text-xs text-gray-500">{{user.posts_count}} 发布</p>
                 </div>
 
                 <div class="mt-6 justify-between">
                     <button
-                        class="inline-block py-4 px-6 bg-purple-600 text-xs text-white rounded-lg"
+                        class="inline-block mr-2 py-4 px-6 bg-purple-600 text-xs text-white rounded-lg"
                         @click="sendFriendshipRequest"
                         v-if="userStore.user.id !== user.id"
                     >
@@ -107,6 +107,8 @@ export default {
             posts:[],
             user: {
                 id: null,
+                friends_count: null,
+                posts_count: null,
             },
             body:'',
         }
@@ -181,6 +183,7 @@ export default {
 
                     this.posts.unshift(response.data)
                     this.body = ''
+                    this.user.posts_count += 1
                 })
                 .catch(error => {
                     console.log('error', error)

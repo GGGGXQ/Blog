@@ -1,6 +1,6 @@
 from django.contrib import auth
 
-from .models import Comment, Post, Like
+from .models import Comment, Post, Like, Trend
 from rest_framework import serializers
 from account.serializers import UserSerializers
 
@@ -38,3 +38,9 @@ class PostDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
         fields = ['id', 'body', 'likes_count', 'comments_count', 'created_by', 'created_at_formatted', 'comments']
+
+
+class TrendSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Trend
+        fields = ['id', 'hashtag', 'occurences']

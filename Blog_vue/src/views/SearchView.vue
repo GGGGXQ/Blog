@@ -29,7 +29,7 @@
                     </p>
                     <div class="mt-6 flex space-x-8 justify-around">
                         <p class="text-xs text-gray-500">{{user.friends_count}} 朋友</p>
-                        <p class="text-xs text-gray-500">120 发布</p>
+                        <p class="text-xs text-gray-500">{{user.posts_count}} 发布</p>
                     </div>
                 </div>    
             </div>

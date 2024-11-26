@@ -79,3 +79,8 @@ class Post(models.Model):
             time_string = time_string.replace(en, zh).replace(en + "s", zh)
 
         return time_string + _("前") 
+    
+
+class Trend(models.Model):
+    hashtag = models.CharField(max_length=255)
+    occurences = models.IntegerField()

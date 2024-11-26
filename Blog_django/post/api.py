@@ -1,8 +1,10 @@
+from json import JSONDecodeError
 from django.http import JsonResponse
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
+
 from .forms import PostForm
-from .models import Post, Like, Comment
-from .serializers import CommentSerializer, PostSerializers, PostDetailSerializer
+from .models import Post, Like, Comment, Trend
+from .serializers import CommentSerializer, PostSerializers, PostDetailSerializer, TrendSerializer
 from account.models import User
 from account.serializers import UserSerializers
 
@@ -11,7 +13,10 @@ from account.serializers import UserSerializers
 def post_list(request):
     user_ids = [request.user.id] +  [friend.id for friend in request.user.friends.all()]
     posts = Post.objects.filter(created_by_id__in=list(user_ids))
+    trend = request.GET.get('trend', '')
 
+    if trend:
+        posts = posts.filter(body__icontains='#' + trend)
     serializer = PostSerializers(posts, many=True, context={'request': request})
 
     return JsonResponse(serializer.data, safe=False)
@@ -50,6 +55,10 @@ def post_create(request):
         post = form.save(commit=False)
         post.created_by = request.user
         post.save()
+
+        user = request.user
+        user.posts_count = user.posts_count + 1
+        user.save()
 
         serializer = PostSerializers(post)
 
@@ -93,4 +102,10 @@ def post_create_comment(request, pk):
     post.save()
     
     serializer = CommentSerializer(comment)
+    return JsonResponse(serializer.data, safe=False)
+
+
+@api_view(['GET'])
+def get_trends(request):
+    serializer = TrendSerializer(Trend.objects.all(), many=True)
     return JsonResponse(serializer.data, safe=False)
