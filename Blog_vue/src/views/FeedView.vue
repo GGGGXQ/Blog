@@ -2,16 +2,10 @@
     <div class="max-w-7xl mx-auto grid grid-cols-4 gap-4">
         <div class="main-center col-span-3 space-y-4">
             <div class="bg-white boder border-gray-200 rounded-lg">
-                <form v-on:submit.prevent="submitForm" method="post">
-                    <div class="p-4">
-                        <textarea v-model="body" class="p-4 w-full bg-gray-100 rounded-lg" placeholder="此刻在想什么"></textarea>
-                    </div>
-
-                    <div class="p-4 border-t border-gray-100 flex justify-between">
-                        <a href="#" class="inline-block py-4 px-6 bg-gray-600 text-white rounded-lg">附加照片</a>
-                        <button class="inline-block py-4 px-6 bg-purple-600 text-white rounded-lg">发布</button>
-                    </div>
-                </form>
+                <FeedForm 
+                    v-bind:user="null" 
+                    v-bind:posts="posts"
+                />
             </div>
 
             <div
@@ -37,6 +31,7 @@ import axios from 'axios'
 import PeopleYouMayKnow from '../components/PeopleYouMayKnow.vue'
 import Trends from '../components/Trends.vue'
 import FeedItem from '../components/FeedItem.vue'
+import FeedForm from '../components/FeedForm.vue';
 export default {
     name: 'FeedView',
 
@@ -44,6 +39,7 @@ export default {
         PeopleYouMayKnow,
         Trends,
         FeedItem,
+        FeedForm,
     },
 
     data() {
@@ -69,24 +65,6 @@ export default {
                     console.log('error', error)
                 })
         },
-
-        submitForm() {
-            console.log('submitForm', this.body)
-
-            axios
-                .post('/api/posts/create/', {
-                    'body': this.body
-                })
-                .then(response => {
-                    console.log('data', response.data)
-
-                    this.posts.unshift(response.data)
-                    this.body = ''
-                })
-                .catch(error => {
-                    console.log('error', error)
-                })
-        }
     }
 }
 </script>

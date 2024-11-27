@@ -1,4 +1,7 @@
 from django.http import JsonResponse
+from django.conf import settings
+from django.core.signing import Signer
+from django.core.mail import send_mail
 from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
@@ -32,9 +35,15 @@ def signup(request):
     })
     
     if form.is_valid():
-        form.save()
+        user = form.save()
+        user.is_active = False
 
-        # Send verification email later
+        
+        signer = Signer()
+        token = signer.sign(f"{user.email}|{user.id}")
+
+        url = f"{settings.WEBSITE_URL}/activateemail/?token={token}"
+
     else:
         message = form.errors.as_json()
     print(message)

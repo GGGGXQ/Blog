@@ -103,7 +103,7 @@ export default {
                     .post('/api/signup/', this.form)
                     .then(response => {
                         if (response.data.message === 'success') {  
-                            this.toastStore.showToast(5000, '注册成功，请前往登录！', 'bg-emerald-500')
+                            this.toastStore.showToast(5000, '用户已注册！请点击您的电子邮件链接激活您的账户!', 'bg-emerald-500')
 
                             this.form.email = ''
                             this.form.name = ''
@@ -115,8 +115,7 @@ export default {
                                 this.errors.push(data[key][0].message)
                             }
 
-                            this.toastStore.showToast(5000, '出错了，请重试', 'bg-red-300')
-                            this.toastStore.showToast(5000, '密码至少八位且必须包含字母和数字,或用户不存在', 'bg-red-300')
+                            this.toastStore.showToast(5000, data[key][0].message, 'bg-red-300')
                         }
                     })
                     .catch(error => {

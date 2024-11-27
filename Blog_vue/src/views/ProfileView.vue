@@ -53,16 +53,10 @@
                 class="bg-white boder border-gray-200 rounded-lg"
                 v-if="userStore.user.id === user.id"
             >
-                <form v-on:submit.prevent="submitForm" method="post">
-                    <div class="p-4">
-                        <textarea v-model="body" class="p-4 w-full bg-gray-100 rounded-lg" placeholder="此刻在想什么"></textarea>
-                    </div>
-
-                    <div class="p-4 border-t border-gray-100 flex justify-between">
-                        <a href="#" class="inline-block py-4 px-6 bg-gray-600 text-white rounded-lg">附加照片</a>
-                        <button class="inline-block py-4 px-6 bg-purple-600 text-white rounded-lg">发布</button>
-                    </div>
-                </form>
+                <FeedForm 
+                    v-bind:user="user" 
+                    v-bind:posts="posts"
+                />
             </div>
 
             <div
@@ -82,6 +76,18 @@
         </div>
     </div>    
 </template>
+<style>
+input[type="file"] {
+    display: none;
+}
+
+.custom-file-upload {
+    border: 1px solid #ccc;
+    display: inline-block;
+    padding: 6px 12px;
+    cursor: pointer;
+}
+</style>
 
 <script>
 import axios from 'axios'
@@ -90,6 +96,7 @@ import Trends from '../components/Trends.vue'
 import FeedItem from '../components/FeedItem.vue'
 import { userUserStore } from '@/stores/user'
 import { useToastStore } from '@/stores/toast'
+import FeedForm from '../components/FeedForm.vue'
 
 export default {
     name: 'FeedView',
@@ -108,6 +115,7 @@ export default {
         PeopleYouMayKnow,
         Trends,
         FeedItem,
+        FeedForm,
     },
 
     data() {
@@ -179,24 +187,6 @@ export default {
                 })
         },
 
-        submitForm() {
-            console.log('submitForm', this.body)
-
-            axios
-                .post('/api/posts/create/', {
-                    'body': this.body
-                })
-                .then(response => {
-                    console.log('data', response.data)
-
-                    this.posts.unshift(response.data)
-                    this.body = ''
-                    this.user.posts_count += 1
-                })
-                .catch(error => {
-                    console.log('error', error)
-                })
-        },
         logout() {
             console.log('Log out')
             this.userStore.removeToken()

@@ -12,8 +12,21 @@
     </div>
 
     <RouterLink :to="{name: 'postview', params: {id: post.id}}"><p>{{ post.body }}</p></RouterLink>
-    
-    <div class="my-6 flex justify-between">
+
+    <template v-if="post.attachments.length">
+        <div>
+            <img v-for="image in post.attachments" v-bind:key="image.id" :src="image.get_image" class="w-full mt-4 rounded-xl" @click="showImage(image.get_image)">
+            <div 
+                v-if="selectedImage" 
+                class="fixed inset-0 bg-black bg-opacity-75 flex items-center justify-center z-50"
+                @click="closeImage"
+            >
+                <img :src="selectedImage" class="max-w-full max-h-full rounded-lg">
+                </div>
+        </div>
+    </template>
+
+    <div class="my-6 flex justify-between"> 
         <div class="flex space-x-6">
             <div class="flex items-center space-x-2" @click="likePost(post.id)">
                 <svg
@@ -59,7 +72,21 @@ export default {
         post: Object
     },
 
+    data() {
+        return {
+            selectedImage: null,
+        }
+    },
+
     methods: {
+        showImage(imageUrl) {
+            this.selectedImage = imageUrl
+        },
+
+        closeImage() {
+            this.selectedImage = null;
+        },
+
         fetchPost() {
             axios
                 .get(`/api/posts/`)
