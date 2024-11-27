@@ -1,4 +1,5 @@
 from django.http import JsonResponse
+from django.contrib.auth.forms import PasswordChangeForm
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from .forms import ProfileForm, SignupForm
@@ -35,10 +36,10 @@ def signup(request):
 
         # Send verification email later
     else:
-        message = 'error'
+        message = form.errors.as_json()
     print(message)
 
-    return JsonResponse({'message': message})
+    return JsonResponse({'message': message}, safe=False)
 
 
 @api_view(['GET'])
@@ -71,6 +72,20 @@ def editprofile(request):
     serializer = UserSerializers(user)
 
     return JsonResponse({'message': '修改已更新', 'user': serializer.data}, status=200)
+
+
+@api_view(['POST'])
+def editpassword(request):
+    user = request.user
+    
+    form = PasswordChangeForm(data=request.POST, user=user)
+
+    if form.is_valid():
+        form.save()
+
+        return JsonResponse({'message': 'success'})
+    else:
+        return JsonResponse({'message': form.errors.as_json()}, safe=False)
 
 
 @api_view(['POST'])

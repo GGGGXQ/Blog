@@ -110,7 +110,13 @@ export default {
                             this.form.password1 = ''
                             this.form.password2 = ''
                         } else {
-                            this.toastStore.showToast(5000, '密码至少八位且必须包含字母和数字', 'bg-red-300')
+                            const data = JSON.parse(response.data.message)
+                            for (const key in data){
+                                this.errors.push(data[key][0].message)
+                            }
+
+                            this.toastStore.showToast(5000, '出错了，请重试', 'bg-red-300')
+                            this.toastStore.showToast(5000, '密码至少八位且必须包含字母和数字,或用户不存在', 'bg-red-300')
                         }
                     })
                     .catch(error => {
