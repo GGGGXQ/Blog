@@ -46,8 +46,13 @@ export default {
         },
         
         submitForm() {
-            console.log('submitForm', this.body)
-
+            if (this.body==='' && this.url===null) {
+                alert('不可发送空帖子')
+                console.log('Body:', body); 
+                console.log('URL:',url);
+                return;
+            }
+            
             let formData = new FormData()
             formData.append('image', this.$refs.file.files[0])
             formData.append('body', this.body)

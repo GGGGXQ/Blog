@@ -17,7 +17,7 @@
                     <button
                         class="inline-block mr-2 py-4 px-6 bg-purple-600 text-xs text-white rounded-lg"
                         @click="sendFriendshipRequest"
-                        v-if="userStore.user.id !== user.id"
+                        v-if="userStore.user.id !== user.id && can_send_friendship_request == true"
                     >
                         加为朋友
                     </button>
@@ -127,6 +127,7 @@ export default {
                 posts_count: null,
             },
             body:'',
+            can_send_friendship_request: null,
         }
     }, 
 
@@ -167,6 +168,7 @@ export default {
                         this.toastStore.showToast(5000, '对方已向您发送好友申请！', 'bg-red-300')
                     } else {
                         this.toastStore.showToast(5000, '请求已发送！', 'bg-emerald-300')
+                        this.can_send_friendship_request = false
                     }
                 })
                 .catch(error => {
@@ -181,6 +183,7 @@ export default {
                     console.log('data', response.data.posts)
                     this.posts = response.data.posts
                     this.user = response.data.user
+                    this.can_send_friendship_request = response.data.can_send_friendship_request
                 })
                 .catch(error => {
                     console.log('error', error)

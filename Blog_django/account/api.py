@@ -21,6 +21,31 @@ def me(request):
     })
 
 
+@api_view(['GET'])
+def friends(request, pk):
+    user = User.objects.get(pk=pk)
+    requests = []
+    
+    if user == request.user:
+        requests = FriendshipRequest.objects.filter(created_for=request.user, status=FriendshipRequest.SENT)
+        requests = FriendshipRequestSerializer(requests, many=True)
+        requests = requests.data
+
+    friends = user.friends.all()
+
+    return JsonResponse({
+        'user': UserSerializers(user).data,
+        'friends': UserSerializers(friends, many=True).data,
+        'requests': requests
+    }, safe=False)
+
+
+@api_view(['GET'])
+def my_friendship_suggetions(request):
+    serializer = UserSerializers(request.user.people_you_may_know.all(), many=True)
+    return JsonResponse(serializer.data, safe=False)
+
+
 @api_view(['POST'])
 @authentication_classes([])
 @permission_classes([])
@@ -50,25 +75,6 @@ def signup(request):
     print(message)
 
     return JsonResponse({'message': message}, safe=False)
-
-
-@api_view(['GET'])
-def friends(request, pk):
-    user = User.objects.get(pk=pk)
-    requests = []
-    
-    if user == request.user:
-        requests = FriendshipRequest.objects.filter(created_for=request.user, status=FriendshipRequest.SENT)
-        requests = FriendshipRequestSerializer(requests, many=True)
-        requests = requests.data
-
-    friends = user.friends.all()
-
-    return JsonResponse({
-        'user': UserSerializers(user).data,
-        'friends': UserSerializers(friends, many=True).data,
-        'requests': requests
-    }, safe=False)
 
 
 @api_view(['POST'])

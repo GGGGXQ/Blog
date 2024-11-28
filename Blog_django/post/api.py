@@ -6,7 +6,7 @@ from notification.utils import create_notification
 from .forms import PostForm, AttachmentForm
 from .models import Post, Like, Comment, Trend
 from .serializers import CommentSerializer, PostSerializers, PostDetailSerializer, TrendSerializer
-from account.models import User
+from account.models import FriendshipRequest, User
 from account.serializers import UserSerializers
 
 
@@ -42,9 +42,19 @@ def post_list_profile(request, id):
 
     user_serializer = UserSerializers(user)
 
+    can_send_friendship_request = True
+    if request.user in user.friends.all():
+        can_send_friendship_request = False
+    
+    existing_request_sent = FriendshipRequest.objects.filter(created_for=user, created_by=request.user).exists()
+    existing_request_received = FriendshipRequest.objects.filter(created_for=request.user, created_by=user).exists()
+    if existing_request_received or existing_request_sent:
+        can_send_friendship_request = False
+
     return JsonResponse({
         'posts':post_serializer.data, 
         'user': user_serializer.data,
+        'can_send_friendship_request': can_send_friendship_request,
     }, safe=False)
 
 
