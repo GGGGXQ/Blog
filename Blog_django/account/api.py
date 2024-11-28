@@ -8,6 +8,7 @@ from rest_framework.decorators import api_view, authentication_classes, permissi
 from .forms import ProfileForm, SignupForm
 from .models import User, FriendshipRequest
 from .serializers import UserSerializers, FriendshipRequestSerializer
+from notification.utils import create_notification
 
 
 @api_view(['GET'])
@@ -111,7 +112,8 @@ def send_friendship_request(request, pk):
     if existing_request_received:
         return JsonResponse({'message': 'The user has already sent you a friendship request.'})
 
-    FriendshipRequest.objects.create(created_for=user, created_by=request.user)
+    friendrequest = FriendshipRequest.objects.create(created_for=user, created_by=request.user)
+    notification = create_notification(request, 'new_friendrequest', friendrequest_id=friendrequest.id)
     return JsonResponse({'message': 'Friendship request sent successfully.'})
 
 @api_view(['POST'])
@@ -130,5 +132,6 @@ def handle_request(request, pk, status):
     request_user.friends_count = request_user.friends_count + 1
     request_user.save()
     
+    notification = create_notification(request, 'accepted_friendrequest', friendrequest_id=friendship_request.id)
 
     return JsonResponse({'message': 'friendship request updated'})

@@ -20,10 +20,12 @@
                     </div>
 
                     <div>
-                        <label>头像</label><br>
-                        <input type="file" ref="file">  
+                        <label class="inline-block py-4 px-6 bg-gray-600 text-white rounded-lg"><input type="file" ref="file" @change="onFileChange">修改头像</label>
                     </div>
 
+                    <div id="preview" v-if="url">
+                        <img :src="url" class="rounded-full object-cover w-24 h-24 sm:w-36 sm:h-36 mx-auto mb-6" />
+                    </div>
                     <template v-if="errors.length > 0">
                         <div class="bg-red-300 text-white rounded-lg p-6">
                             <p v-for="error in errors" v-bind:key="error">{{ error }}</p>
@@ -60,16 +62,12 @@ export default {
                 name: this.userStore.user.name,
             },
             errors: [],
+            url: null,
         }
     },
     methods: {
         submitForm() {
             this.errors = []
-
-            if (this.form.email === '') {
-                this.errors.push('请输入你的邮箱')
-            }
-
             if (this.form.name === '') {
                 this.errors.push('请输入你的昵称')
             }
@@ -90,9 +88,8 @@ export default {
                                 id: this.userStore.user.id,
                                 name: this.form.name,
                                 avatar: response.data.user.get_avatar
-
                             })
-
+                            this.url = null
                             this.$router.back()
                         } else {
                             this.toastStore.showToast(5000, '出错了，请重试！', 'bg-red-300')
@@ -102,7 +99,21 @@ export default {
                         console.log('error', error)
                     })
             }
-        }
+        },
+
+        onFileChange(event) {
+            const file = event.target.files[0];
+            if (file) {
+                if (!file.type.startsWith("image/")) {
+                    alert("请上传图片文件！");
+                    return;
+                }
+                this.url = URL.createObjectURL(file);
+            } else {
+                this.url = null;
+            }
+        },
+
     },
 }   
 </script>

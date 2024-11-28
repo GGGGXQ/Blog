@@ -2,6 +2,7 @@ from json import JSONDecodeError
 from django.http import JsonResponse
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
+from notification.utils import create_notification
 from .forms import PostForm, AttachmentForm
 from .models import Post, Like, Comment, Trend
 from .serializers import CommentSerializer, PostSerializers, PostDetailSerializer, TrendSerializer
@@ -100,6 +101,7 @@ def post_like(request, pk):
         post.likes_count = post.likes_count + 1
         post.likes.add(like)
         post.save()
+        notification = create_notification(request, 'post_like', post_id=post.id)
         return JsonResponse({'message': 'like created'})
 
 
@@ -111,6 +113,8 @@ def post_create_comment(request, pk):
     post.comments_count = post.comments_count + 1
     post.comments.add(comment)
     post.save()
+
+    notification = create_notification(request, 'post_comment', post_id=post.id)
     
     serializer = CommentSerializer(comment)
     return JsonResponse(serializer.data, safe=False)

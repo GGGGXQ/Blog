@@ -23,7 +23,7 @@
                     v-for="friendshipRequest in friendshipRequests"
                     v-bind:key="friendshipRequest.id"
                 >
-                    <img :src="user.get_avatar" class="mb-6 mx-auto rounded-full  w-1/4 h-auto">
+                    <img :src="friendshipRequest.created_by.get_avatar" class="mb-6 mx-auto rounded-full  w-1/4 h-auto">
                     <p>
                         <strong>
                             <RouterLink :to="{name:'profile', params:{ 'id': friendshipRequest.created_by.id }}">{{ friendshipRequest.created_by.name }}</RouterLink>
@@ -52,7 +52,7 @@
                     v-for="user in friends"
                     v-bind:key="user.id"
                 >
-                    <RouterLink :to="{name:'profile', params:{ 'id': user.id }}"><img :src="user.get_avatar" class="mb-6 rounded-full"></RouterLink>
+                    <RouterLink :to="{name:'profile', params:{ 'id': user.id }}"><img :src="user.get_avatar" class="rounded-full object-cover w-24 h-24 sm:w-36 sm:h-36 mx-auto mb-6"></RouterLink>
                     <p>
                         <strong>
                             <RouterLink :to="{name:'profile', params:{ 'id': user.id }}">{{ user.name }}</RouterLink>
