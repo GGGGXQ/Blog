@@ -1,5 +1,5 @@
-from re import U
-from django.http import JsonResponse, QueryDict
+from django.db.models import Q
+from django.http import JsonResponse
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 from account.models import User
@@ -13,14 +13,22 @@ from post.serializers import PostSerializers
 def search(request):
     data = request.data
     query = data['query']
-    
-    users = User.objects.filter(name__icontains=query)
-    user_serializer = UserSerializers(users, many=True)
+    user_ids = [request.user.id]
 
-    posts = Post.objects.filter(body__icontains=query)
-    post_serializer = PostSerializers(posts, many=True)
+    for user in request.user.friends.all():
+        user_ids.append(user.id)
+
+    users = User.objects.filter(name__icontains=query)
+    users_serializer = UserSerializers(users, many=True)
+
+    posts = Post.objects.filter(
+        Q(body__icontains=query, is_private=False) | 
+        Q(created_by_id__in=list(user_ids), body__icontains=query)
+    )
+
+    posts_serializer = PostSerializers(posts, many=True)
 
     return JsonResponse({
-        'users': user_serializer.data,
-        'posts': post_serializer.data, 
+        'users': users_serializer.data,
+        'posts': posts_serializer.data
     }, safe=False)

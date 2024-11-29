@@ -1,5 +1,6 @@
 from json import JSONDecodeError
 from django.http import JsonResponse
+from django.db.models import Q
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
 
 from notification.utils import create_notification
@@ -17,7 +18,7 @@ def post_list(request):
     trend = request.GET.get('trend', '')
 
     if trend:
-        posts = posts.filter(body__icontains='#' + trend)
+        posts = posts.filter(body__icontains='#' + trend).filter(is_private=False)
     serializer = PostSerializers(posts, many=True, context={'request': request})
 
     return JsonResponse(serializer.data, safe=False)
@@ -25,7 +26,8 @@ def post_list(request):
 
 @api_view(['GET'])
 def post_detail(request, pk):
-    post = Post.objects.get(pk=pk)
+    user_ids = [request.user.id] +  [friend.id for friend in request.user.friends.all()]
+    post = Post.objects.filter(Q(created_by_id__in=list(user_ids)) or Q(is_private=False)).get(pk=pk)
 
     return JsonResponse({
         'post': PostDetailSerializer(post).data,
@@ -38,9 +40,12 @@ def post_list_profile(request, id):
     user = User.objects.get(pk=id)
     posts = Post.objects.filter(created_by_id=id)
 
-    post_serializer = PostSerializers(posts, many=True, context={'request': request})
+    if not (request.user in user.friends.all() or request.user == user):
+        posts = posts.filter(is_private=False)
 
+    posts_serializer = PostSerializers(posts, many=True)
     user_serializer = UserSerializers(user)
+
 
     can_send_friendship_request = True
     if request.user in user.friends.all():
@@ -52,7 +57,7 @@ def post_list_profile(request, id):
         can_send_friendship_request = False
 
     return JsonResponse({
-        'posts':post_serializer.data, 
+        'posts':posts_serializer.data, 
         'user': user_serializer.data,
         'can_send_friendship_request': can_send_friendship_request,
     }, safe=False)

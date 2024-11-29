@@ -9,7 +9,7 @@
             v-bind:key="user.id"
         >
             <div class="flex items-center space-x-2">
-                <img :src="user.get_avatar" class="w-[40px] rounded-full">
+                <img :src="user.get_avatar" class="w-[40px] rounded-full object-cover w-6 h-6 sm:w-12 sm:h-12 mx-auto">
 
                 <p class="text-xs"><strong>{{ user.name }}</strong></p>
             </div>
