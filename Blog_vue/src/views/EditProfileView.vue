@@ -4,8 +4,11 @@
             <div class="p-12 bg-white border border-gray-200 rounded-lg">
                 <h1 class="mb-6 text-2xl">修改个人信息</h1>
                 <p class="mb-6 text-gray-500">
-                    注册个人账号发表自己的文章，记录自己美好生活<br/>
-                    同时更好地使用7+chat查看他人文章以及评论他人文章
+                    管理您的个人信息，打造独特的数字身份。<br>
+                    在这里，您可以轻松更新个人资料，确保您的信息准确无误，反映您的真实自我。<br>
+                    通过个性化设置，您可以更自如地发表文章，记录和分享您的生活点滴。<br>
+                    让我们共同构建一个充满活力的社区，让每个人都能在这里找到归属感。<br>
+
                 </p>
                 <RouterLink to="/profile/edit/password"><button class="py-4 px-6 bg-blue-600 text-white rounded-lg">修改密码</button></RouterLink>
             </div>

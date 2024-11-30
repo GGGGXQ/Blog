@@ -4,8 +4,9 @@
             <div class="p-12 bg-white border border-gray-200 rounded-lg">
                 <h1 class="mb-6 text-2xl">登录</h1>
                 <p class="mb-6 text-gray-500">
-                    登录个人账号发表自己的文章，记录自己美好生活<br/>
-                    同时更好地使用7+chat查看他人文章以及评论他人文章
+                    登录您的个人账号，开始撰写并发布您的文章，捕捉并珍藏生活中的美好瞬间。<br>
+                    同时，您也能更便捷地阅读他人的精彩作品，参与讨论，分享您的见解和评论，<br>
+                    与他人的文章互动，共同营造一个充满活力和深度的交流平台。
                 </p>
 
                 <p class="font-bold">
@@ -65,7 +66,17 @@ export default {
             errors: []
         }
     },
+
+    mounted() {
+        this.getStatus()
+    },
+
     methods: {
+        getStatus() {
+            if (this.userStore.user.isAuthenticated) {
+                this.$router.push('/feed')
+            }
+        }, 
         async submitForm() {
             this.errors = []
 

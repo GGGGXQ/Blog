@@ -4,8 +4,9 @@
             <div class="p-12 bg-white border border-gray-200 rounded-lg">
                 <h1 class="mb-6 text-2xl">注册</h1>
                 <p class="mb-6 text-gray-500">
-                    注册个人账号发表自己的文章，记录自己美好生活<br/>
-                    同时更好地使用7+chat查看他人文章以及评论他人文章
+                    创建个人账户，分享您的美好瞬间，记录生活中的点滴幸福。<br>
+                    同时，您也可以便捷地浏览他人的精彩故事，参与互动，留下您的独到见解和评论。<br>
+                    让我们共同构建一个充满活力和共鸣的社区。
                 </p>
 
                 <p class="font-bold">
@@ -56,13 +57,16 @@
 import axios from 'axios'
 
 import { useToastStore } from '@/stores/toast'
+import { userUserStore } from '@/stores/user'
 
 export default {
     setup() {
         const toastStore = useToastStore()
+        const userStore = userUserStore()
 
         return {
-            toastStore
+            toastStore,
+            userStore
         }
     },
 
@@ -78,7 +82,17 @@ export default {
         }
     },
 
+    mounted() {
+        this.getStatus()
+    },
+
     methods: {
+        getStatus() {
+            if (this.userStore.user.isAuthenticated) {
+                this.$router.push('/feed')
+            }
+        }, 
+
         submitForm() {
             this.errors = []
 
@@ -103,7 +117,7 @@ export default {
                     .post('/api/signup/', this.form)
                     .then(response => {
                         if (response.data.message === 'success') {  
-                            this.toastStore.showToast(5000, '用户已注册！请点击您的电子邮件链接激活您的账户!', 'bg-emerald-500')
+                            this.toastStore.showToast(5000, '用户已注册!', 'bg-emerald-500')
 
                             this.form.email = ''
                             this.form.name = ''
