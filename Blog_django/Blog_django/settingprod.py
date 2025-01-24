@@ -12,9 +12,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-#^i#!$*&0-r+r5w+#jj&0xmnz5u)1u*55&mjg#ij0li4%f^6z3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['api.blog.com']
+ALLOWED_HOSTS = ['7plusblog.cn']
 
 WEBSITE_URL = 'http://blog.com'
 
