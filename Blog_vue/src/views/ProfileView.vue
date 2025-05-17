@@ -167,9 +167,9 @@ export default {
                 .post(`/api/friends/${this.$route.params.id}/request/`)
                 .then(response => {
                     console.log('data', response.data)
-                    if (response.data.message == 'You have already sent a friendship request to this user.') {
+                    if (response.data.message === 'You have already sent a friendship request to this user.') {
                         this.toastStore.showToast(5000, '不可重复发送！', 'bg-red-300')
-                    } else if (response.data.message == 'The user has already sent you a friendship request.'){
+                    } else if (response.data.message === 'The user has already sent you a friendship request.'){
                         this.toastStore.showToast(5000, '对方已向您发送好友申请！', 'bg-red-300')
                     } else {
                         this.toastStore.showToast(5000, '请求已发送！', 'bg-emerald-300')

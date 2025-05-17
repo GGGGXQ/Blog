@@ -105,14 +105,25 @@ export default {
         }
     }, 
 
+    watch: {
+      "$route.params.id": {
+        handler: function() {
+          this.getFriends()
+        },
+        deep: true,
+        immediate: true
+      }
+    },
+
     mounted() {
         this.getFriends()
     },
 
     methods: {
         getFriends() {
+            const cacheBuster = new Date().getTime()
             axios
-                .get(`/api/friends/${this.$route.params.id}/`)
+                .get(`/api/friends/${this.$route.params.id}/?_=${cacheBuster}`)
                 .then(response => {
                     console.log('data', response.data)
                     
@@ -124,15 +135,16 @@ export default {
                     console.log('error', error)
                 })
         },
-        handleRequest(status, pk) {
+        handleRequest(status, pk, index) {
             console.log('handleRequest', status)
 
             axios
                 .post(`/api/friends/${pk}/${status}/`)
                 .then(response => {
                     console.log('data', response.data)
+                    this.getFriends()
                     // 成功处理后，从数组中移除该好友请求
-                    this.friendshipRequests.splice(index, 1);
+                    this.friendshipRequests = this.friendshipRequests.filter(request => request.id !== this.friendshipRequests[index].id)
                 })
                 .catch(error => {
                     console.log('error', error)

@@ -22,6 +22,22 @@ WEBSITE_URL = 'http://127.0.0.1:8000'
 
 AUTH_USER_MODEL = 'account.User'
 
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'corsheaders',
+    'account',
+    'chat',
+    'post',
+    'notification',
+    'search',
+    'rest_framework',
+    'rest_framework_simplejwt',
+]
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(days=30),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=180),
@@ -47,22 +63,6 @@ CSRF_TRUSTED_ORIGINS = [
     "http://127.0.0.1:5173",
 ]
 
-INSTALLED_APPS = [
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'account',
-    'chat',
-    'post',
-    'notification',
-    'search',
-    'rest_framework',
-    'rest_framework_simplejwt',
-    'corsheaders',
-]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',

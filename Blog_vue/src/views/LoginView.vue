@@ -105,7 +105,7 @@ export default {
             
             if (this.errors.length === 0) {
                 await axios
-                    .get('/api/me/')
+                    .get(`/api/me/?t=${Date.now()}`)
                     .then(response => {
                         this.userStore.setUserInfo(response.data)
 
