@@ -6,7 +6,7 @@
 
 - **前端**: Vue + Tailwind CSS
 - **后端**: Django + Django Rest Framework
-- **数据库**: PostgreSQL
+- **数据库**: MySQL
 - **部署**: Gunicorn + Supervisor + Nginx
 
 ## 功能特性 ✨
