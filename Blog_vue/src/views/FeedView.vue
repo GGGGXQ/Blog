@@ -5,6 +5,7 @@
                 <FeedForm 
                     v-bind:user="null" 
                     v-bind:posts="posts"
+                    v-on:refresh-feed="getFeed"
                 />
             </div>
 
@@ -47,10 +48,11 @@ export default {
             posts:[],
             body:'',
         }
-    }, 
+    },
 
-    mounted() {
-        this.getFeed()
+     mounted() {
+      console.log('FeedView mounted'); // 验证是否执行
+      this.getFeed();
     },
 
     methods: {
@@ -59,16 +61,16 @@ export default {
         },
         
         getFeed() {
-            axios
-                .get('/api/posts/')
-                .then(response => {
-                    console.log('data', response.data)
-                    this.posts = response.data
-                })
-                .catch(error => {
-                    console.log('error', error)
-                })
-        },
+          const cacheBuster = new Date().getTime();
+          axios
+            .get(`/api/posts/?_=${cacheBuster}`) // 添加时间戳参数防缓存
+            .then(response => {
+              this.posts = response.data
+            })
+            .catch(error => {
+              console.log('error', error)
+            })
+        }
     }
 }
 </script>

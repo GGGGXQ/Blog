@@ -11,8 +11,8 @@ export const userUserStore = defineStore({
             name: null,
             email: null,
             access: null,
-            refresh: null,
-            avatar: null
+            // refresh: null,
+            // avatar: null
         }
     }),
 
@@ -31,7 +31,7 @@ export const userUserStore = defineStore({
                 this.user.avatar = localStorage.getItem('user.avatar')
                 this.user.isAuthenticated = true
 
-                this.refreshToken()
+                // this.refreshToken()
 
                 console.log('Initialized user:', this.user)
             }
@@ -41,11 +41,11 @@ export const userUserStore = defineStore({
             console.log('setToken', data)
 
             this.user.access = data.access
-            this.user.refresh = data.refresh
+            // this.user.refresh = data.refresh
             this.user.isAuthenticated = true
 
             localStorage.setItem('user.access', data.access)
-            localStorage.setItem('user.refresh', data.refresh)
+            // localStorage.setItem('user.refresh', data.refresh)
 
             console.log('user.access: ', localStorage.getItem('user.access'))
         },
@@ -53,7 +53,7 @@ export const userUserStore = defineStore({
         removeToken() {
             console.log('removeToken')
 
-            this.user.refresh = null
+            // this.user.refresh = null
             this.user.access = null
             this.user.isAuthenticated = false
             this.user.id = null
@@ -62,7 +62,7 @@ export const userUserStore = defineStore({
             this.user.avatar = null
 
             localStorage.setItem('user.access', '')
-            localStorage.setItem('user.refresh', '')
+            // localStorage.setItem('user.refresh', '')
             localStorage.setItem('user.id', '')
             localStorage.setItem('user.name', '')
             localStorage.setItem('user.email', '')
@@ -83,24 +83,24 @@ export const userUserStore = defineStore({
             localStorage.setItem('user.avatar', this.user.avatar)
 
             console.log('User', this.user)
-        },
+        }
 
-        refreshToken() {
-            axios.post('/api/refresh/', {
-                refresh: this.user.refresh
-            })
-                .then((response) => {
-                    this.user.access = response.data.access
-
-                    localStorage.setItem('user.access', response.data.access)
-
-                    axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access
-                })
-                .catch((error)=>{
-                    console.log(error)
-
-                    this.removeToken()
-                })
-        },
+        // refreshToken() {
+        //     axios.post('/api/refresh/', {
+        //         refresh: this.user.refresh
+        //     })
+        //         .then((response) => {
+        //             this.user.access = response.data.access
+        //
+        //             localStorage.setItem('user.access', response.data.access)
+        //
+        //             axios.defaults.headers.common["Authorization"] = "Bearer " + response.data.access
+        //         })
+        //         .catch((error)=>{
+        //             console.log(error)
+        //
+        //             this.removeToken()
+        //         })
+        // },
     }
 })

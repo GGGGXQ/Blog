@@ -39,10 +39,12 @@ REST_FRAMEWORK = {
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",
+    "http://127.0.0.1:5173",
 ]
 
 CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
+    "http://127.0.0.1:5173",
 ]
 
 INSTALLED_APPS = [
@@ -71,6 +73,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.cache.CacheMiddleware',
 ]
 
 AUTHENTICATION_BACKENDS = [
@@ -101,13 +104,55 @@ WSGI_APPLICATION = 'Blog_django.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
+import dj_db_conn_pool
+
+
 DATABASES = {
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': BASE_DIR / 'db.sqlite3',
+    # }
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'dj_db_conn_pool.backends.mysql',
+        'NAME': 'blog',
+        'PORT': 3306,
+        'HOST': '127.0.0.1',
+        'USER': 'root',
+        'PASSWORD': '123456',
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        },
+        'POOL_OPTIONS': {
+            'POOL_SIZE': 10,  # 连接池默认创建的链接对象的数量
+            'MAX_OVERFLOW': 10  # 连接池默认创建的链接对象的最大数量
+        }
     }
 }
 
+
+# # redis配置
+# CACHES = {
+#     # 默认缓存
+#     'default': {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         # "LOCATION": "redis://:密码@IP地址:端口/库编号",
+#         "LOCATION": "redis://:root@192.168.171.128:6379/6",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#             "CONNECTION_POOL_KWARGS": {"max_connections": 100},
+#         }
+#     },
+#     # 存储post列表
+#     "post_list": {
+#         "BACKEND": "django_redis.cache.RedisCache",
+#         "LOCATION": "redis://:root@192.168.171.128:6379/7",
+#         "OPTIONS": {
+#             "CLIENT_CLASS": "django_redis.client.DefaultClient",
+#             "CONNECTION_POOL_KWARGS": {"max_connections": 100},
+#         }
+#     },
+# }
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators

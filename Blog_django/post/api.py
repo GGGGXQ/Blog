@@ -1,4 +1,5 @@
 from json import JSONDecodeError
+import json
 from django.http import JsonResponse
 from django.db.models import Q
 from rest_framework.decorators import api_view, authentication_classes, permission_classes
@@ -13,12 +14,16 @@ from account.serializers import UserSerializers
 
 @api_view(['GET'])
 def post_list(request):
-    user_ids = [request.user.id] +  [friend.id for friend in request.user.friends.all()]
+    user = User.objects.get(id=request.user.id)  # 强制刷新用户对象
+    friends = user.friends.all()  # 获取最新好友列表
+    user_ids = [user.id] + [friend.id for friend in friends]
     posts = Post.objects.filter(created_by_id__in=list(user_ids))
     trend = request.GET.get('trend', '')
-
     if trend:
-        posts = posts.filter(body__icontains='#' + trend).filter(is_private=False)
+        posts = Post.objects.filter(
+            Q(created_by_id__in=user_ids) &
+            (Q(is_private=False) | Q(created_by=request.user))
+        )
     serializer = PostSerializers(posts, many=True, context={'request': request})
 
     return JsonResponse(serializer.data, safe=False)
@@ -31,7 +36,7 @@ def post_detail(request, pk):
 
     return JsonResponse({
         'post': PostDetailSerializer(post).data,
-        
+
     })
 
 
@@ -46,18 +51,17 @@ def post_list_profile(request, id):
     posts_serializer = PostSerializers(posts, many=True)
     user_serializer = UserSerializers(user)
 
-
     can_send_friendship_request = True
     if request.user in user.friends.all():
         can_send_friendship_request = False
-    
+
     existing_request_sent = FriendshipRequest.objects.filter(created_for=user, created_by=request.user).exists()
     existing_request_received = FriendshipRequest.objects.filter(created_for=request.user, created_by=user).exists()
     if existing_request_received or existing_request_sent:
         can_send_friendship_request = False
 
     return JsonResponse({
-        'posts':posts_serializer.data, 
+        'posts': posts_serializer.data,
         'user': user_serializer.data,
         'can_send_friendship_request': can_send_friendship_request,
     }, safe=False)
@@ -117,16 +121,14 @@ def post_like(request, pk):
     if like:
         like.delete()
         post = Post.objects.get(pk=pk)
-            
+
         post.likes_count = post.likes_count - 1
         post.likes.remove(like)
         post.save()
         return JsonResponse({'message': 'dislike created'})
-        
+
     else:
-        
         like = Like.objects.create(created_by=request.user)
-    
         post = Post.objects.get(pk=pk)
 
         post.likes_count = post.likes_count + 1
@@ -146,7 +148,7 @@ def post_create_comment(request, pk):
     post.save()
 
     notification = create_notification(request, 'post_comment', post_id=post.id)
-    
+
     serializer = CommentSerializer(comment)
     return JsonResponse(serializer.data, safe=False)
 

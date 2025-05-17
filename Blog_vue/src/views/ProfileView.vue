@@ -182,8 +182,9 @@ export default {
         },
 
         getFeed() {
+            const cacheBuster = new Date().getTime();
             axios
-                .get(`/api/posts/profile/${this.$route.params.id}/`)
+                .get(`/api/posts/profile/${this.$route.params.id}/?_=${cacheBuster}\``)
                 .then(response => {
                     console.log('data', response.data.posts)
                     this.posts = response.data.posts

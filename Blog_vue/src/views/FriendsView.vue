@@ -131,7 +131,8 @@ export default {
                 .post(`/api/friends/${pk}/${status}/`)
                 .then(response => {
                     console.log('data', response.data)
-                    
+                    // 成功处理后，从数组中移除该好友请求
+                    this.friendshipRequests.splice(index, 1);
                 })
                 .catch(error => {
                     console.log('error', error)
